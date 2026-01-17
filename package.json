@@ -1,0 +1,24 @@
+{
+  "name": "retro-mountain-viewer",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "PS2-style retro terrain viewer with real USGS elevation data",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run generate-mountains && vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "generate-mountains": "node scripts/generate-mountains.js"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
+    "@tsconfig/svelte": "^5.0.4",
+    "@webgpu/types": "^0.1.44",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
+    "typescript": "^5.6.0",
+    "vite": "^5.4.0"
+  }
+}

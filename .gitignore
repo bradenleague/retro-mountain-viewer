@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.claude/
+CLAUDE.md
+public/*_heightmap.png
+!public/rainier_heightmap.png
+public/*_heightmap.png.aux.xml
+src/lib/mountains.json

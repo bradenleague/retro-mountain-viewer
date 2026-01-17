@@ -1,0 +1,165 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ALPINE INSTRUMENT DESIGN SYSTEM
+   A refined cartographic tool aesthetic with subtle retro touches
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ─────────────────────────────────────────────────────────────────────────
+     COLOR PALETTE: Alpine/Mountainous
+     ───────────────────────────────────────────────────────────────────────── */
+
+  /* Primary accent - warm amber (like sunset on peaks) */
+  --accent-primary: #E8A94E;
+  --accent-primary-dim: #C48B3A;
+  --accent-primary-bright: #F4C06F;
+  --accent-glow: rgba(232, 169, 78, 0.25);
+  --accent-glow-strong: rgba(232, 169, 78, 0.4);
+
+  /* Secondary accent - alpine teal */
+  --accent-secondary: #5B9EA6;
+  --accent-secondary-dim: #4A8690;
+
+  /* Success/Active states */
+  --status-active: #7CB379;
+  --status-warn: #E8A94E;
+  --status-error: #C96B6B;
+
+  /* Neutral palette - slate with blue undertone */
+  --slate-950: #0D1117;
+  --slate-900: #161B22;
+  --slate-850: #1C2128;
+  --slate-800: #21262D;
+  --slate-700: #30363D;
+  --slate-600: #484F58;
+  --slate-500: #6E7681;
+  --slate-400: #8B949E;
+  --slate-300: #B1BAC4;
+  --slate-200: #C9D1D9;
+  --slate-100: #E6EDF3;
+
+  /* Surface colors */
+  --surface-base: var(--slate-950);
+  --surface-raised: var(--slate-900);
+  --surface-overlay: rgba(22, 27, 34, 0.95);
+  --surface-panel: rgba(28, 33, 40, 0.92);
+
+  /* Text colors */
+  --text-primary: var(--slate-100);
+  --text-secondary: var(--slate-300);
+  --text-muted: var(--slate-500);
+  --text-accent: var(--accent-primary);
+
+  /* Border colors */
+  --border-subtle: var(--slate-800);
+  --border-default: var(--slate-700);
+  --border-emphasis: var(--slate-600);
+  --border-accent: var(--accent-primary-dim);
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     TYPOGRAPHY
+     ───────────────────────────────────────────────────────────────────────── */
+
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+  --text-xs: 0.675rem;
+  --text-sm: 0.75rem;
+  --text-base: 0.8125rem;
+  --text-lg: 0.9375rem;
+  --text-xl: 1.125rem;
+
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     SPACING & SIZING
+     ───────────────────────────────────────────────────────────────────────── */
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+
+  --panel-width: 300px;
+  --mountain-width: 280px;
+  --control-width: 320px;
+
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     EFFECTS & TRANSITIONS
+     ───────────────────────────────────────────────────────────────────────── */
+
+  --transition-fast: 100ms ease;
+  --transition-normal: 180ms ease;
+  --transition-slow: 280ms ease;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 12px var(--accent-glow);
+  --shadow-glow-strong: 0 0 20px var(--accent-glow-strong);
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Z-INDEX SCALE
+     ───────────────────────────────────────────────────────────────────────── */
+
+  --z-base: 1;
+  --z-raised: 10;
+  --z-panel: 100;
+  --z-hud: 200;
+  --z-drawer: 300;
+  --z-overlay: 400;
+  --z-modal: 500;
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     LEGACY COMPATIBILITY (for gradual migration)
+     ───────────────────────────────────────────────────────────────────────── */
+
+  --ps2-yellow-primary: var(--accent-primary);
+  --ps2-yellow-dark: var(--accent-primary-dim);
+  --ps2-yellow-light: var(--accent-primary-bright);
+  --ps2-silver-primary: var(--slate-200);
+  --ps2-silver-dark: var(--slate-400);
+  --ps2-silver-darker: var(--slate-600);
+  --ps2-silver-light: var(--slate-100);
+  --ps2-glow-color: var(--accent-glow);
+  --ps2-glow-strong: var(--accent-glow-strong);
+  --ps2-bg-dark: var(--surface-base);
+  --ps2-bg-panel: var(--surface-panel);
+  --ps2-bg-drawer: var(--surface-overlay);
+  --ps2-text-primary: var(--text-primary);
+  --ps2-text-secondary: var(--text-secondary);
+  --ps2-text-muted: var(--text-muted);
+  --ps2-border-color: var(--border-accent);
+  --ps2-border-glow: var(--accent-glow);
+  --ps2-font-family: var(--font-sans);
+  --ps2-font-mono: var(--font-mono);
+  --ps2-panel-width: var(--panel-width);
+  --ps2-drawer-width: var(--panel-width);
+  --ps2-mountain-width: var(--mountain-width);
+  --ps2-control-width: var(--control-width);
+  --ps2-transition-fast: var(--transition-fast);
+  --ps2-transition-medium: var(--transition-normal);
+  --ps2-transition-slow: var(--transition-slow);
+  --ps2-border-radius: var(--radius-sm);
+  --ps2-border-radius-large: var(--radius-md);
+  --ps2-shadow-panel: var(--shadow-lg);
+  --ps2-shadow-glow: var(--shadow-glow);
+  --ps2-shadow-glow-strong: var(--shadow-glow-strong);
+  --ps2-z-panel: var(--z-panel);
+  --ps2-z-drawer: var(--z-drawer);
+  --ps2-z-hud: var(--z-hud);
+  --ps2-z-overlay: var(--z-overlay);
+}
