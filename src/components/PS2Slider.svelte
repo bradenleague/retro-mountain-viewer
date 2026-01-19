@@ -148,4 +148,43 @@
     outline: 2px solid var(--accent-primary);
     outline-offset: 2px;
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     MOBILE TOUCH IMPROVEMENTS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (max-width: 1024px), (pointer: coarse) {
+    .slider-track-container {
+      height: 36px; /* Larger touch target */
+    }
+
+    .slider-track {
+      height: 6px;
+    }
+
+    .slider-thumb {
+      width: 20px;
+      height: 20px;
+      border-width: 3px;
+    }
+
+    /* Active state is more important on touch */
+    input:active ~ .slider-thumb {
+      transform: translateX(-50%) scale(1.2);
+      box-shadow: 0 0 0 8px var(--accent-glow-strong);
+    }
+
+    .slider-header {
+      margin-bottom: var(--space-2);
+    }
+
+    .slider-label {
+      font-size: var(--text-base);
+    }
+
+    .slider-value {
+      font-size: var(--text-sm);
+      padding: 4px 8px;
+    }
+  }
 </style>

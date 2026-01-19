@@ -520,4 +520,59 @@
     border-color: var(--accent-primary);
     color: var(--accent-primary);
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     MOBILE TOUCH IMPROVEMENTS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (max-width: 1024px), (pointer: coarse) {
+    /* Larger touch targets for toggle chips */
+    .toggle-chip {
+      padding: 10px 14px;
+      font-size: var(--text-sm);
+    }
+
+    /* Larger preset buttons */
+    .preset-btn {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-sm);
+    }
+
+    /* Larger camera action buttons */
+    .camera-actions {
+      gap: var(--space-3);
+    }
+
+    /* Better spacing for sections */
+    .control-group {
+      margin-bottom: var(--space-4);
+      padding-top: var(--space-3);
+    }
+
+    /* Larger true scale button */
+    .true-scale-btn {
+      padding: 10px 14px;
+      font-size: var(--text-sm);
+    }
+
+    /* Larger frame buttons */
+    .frame-btn {
+      padding: var(--space-3);
+    }
+
+    .frame-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Toggle inline larger touch target */
+    .toggle-inline {
+      padding: var(--space-2) 0;
+    }
+
+    .toggle-inline input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+    }
+  }
 </style>

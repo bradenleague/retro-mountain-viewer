@@ -167,6 +167,8 @@
   let isDesktop: boolean = false;
   let showUI: boolean = true;
   let showCompass: boolean = true;
+  let showMobileTouchHint: boolean = false;
+  let mobileTouchHintTimer: ReturnType<typeof setTimeout> | null = null;
   type FrameMode = "none" | "ig-4x5" | "story-9x16";
   let frameMode: FrameMode = "none";
   $: frameRatio =
@@ -403,6 +405,14 @@
   let velocityY = 0;
   const INERTIA_DECAY = 0.92;
   const INERTIA_THRESHOLD = 0.001;
+
+  // Touch state for mobile controls
+  let lastTouchX = 0;
+  let lastTouchY = 0;
+  let lastPinchDistance = 0;
+  let isTouchDragging = false;
+  let isTouchPanning = false;
+  let activeTouches = 0;
 
   // Camera animation state
   let isAnimating = false;
@@ -1787,7 +1797,8 @@
   }
 
   function applyInertia() {
-    if (isDragging || (Math.abs(velocityX) < INERTIA_THRESHOLD && Math.abs(velocityY) < INERTIA_THRESHOLD)) {
+    // Don't apply inertia while actively dragging (mouse or touch)
+    if (isDragging || isTouchDragging || (Math.abs(velocityX) < INERTIA_THRESHOLD && Math.abs(velocityY) < INERTIA_THRESHOLD)) {
       return;
     }
 
@@ -1831,6 +1842,136 @@
     const zoomSpeed = 0.001 * Math.max(0.5, cameraDistance / 2);
     cameraDistance *= 1 + e.deltaY * zoomSpeed;
     clampCamera();
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TOUCH CONTROLS FOR MOBILE
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  function getTouchCenter(touches: TouchList): { x: number; y: number } {
+    let x = 0, y = 0;
+    for (let i = 0; i < touches.length; i++) {
+      x += touches[i].clientX;
+      y += touches[i].clientY;
+    }
+    return { x: x / touches.length, y: y / touches.length };
+  }
+
+  function getPinchDistance(touches: TouchList): number {
+    if (touches.length < 2) return 0;
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function showTouchHintBriefly() {
+    if (!isDesktop && !showMobileTouchHint) {
+      showMobileTouchHint = true;
+      if (mobileTouchHintTimer) clearTimeout(mobileTouchHintTimer);
+      mobileTouchHintTimer = setTimeout(() => {
+        showMobileTouchHint = false;
+      }, 2500);
+    }
+  }
+
+  function onTouchStart(e: TouchEvent) {
+    // Don't interfere with UI elements
+    const target = e.target as HTMLElement;
+    if (!target?.closest(".canvas-frame")) return;
+
+    // Show touch hint briefly on first touch
+    showTouchHintBriefly();
+
+    activeTouches = e.touches.length;
+
+    if (activeTouches === 1) {
+      // Single finger - orbit
+      isTouchDragging = true;
+      isTouchPanning = false;
+      lastTouchX = e.touches[0].clientX;
+      lastTouchY = e.touches[0].clientY;
+      autoSpin = false;
+      velocityX = 0;
+      velocityY = 0;
+    } else if (activeTouches === 2) {
+      // Two fingers - pinch zoom + pan
+      isTouchDragging = false;
+      isTouchPanning = true;
+      const center = getTouchCenter(e.touches);
+      lastTouchX = center.x;
+      lastTouchY = center.y;
+      lastPinchDistance = getPinchDistance(e.touches);
+      autoSpin = false;
+      velocityX = 0;
+      velocityY = 0;
+    }
+  }
+
+  function onTouchMove(e: TouchEvent) {
+    if (!isTouchDragging && !isTouchPanning) return;
+
+    // Prevent scrolling when interacting with canvas
+    e.preventDefault();
+
+    if (isTouchDragging && e.touches.length === 1) {
+      // Single finger orbit
+      const touch = e.touches[0];
+      const dx = touch.clientX - lastTouchX;
+      const dy = touch.clientY - lastTouchY;
+      lastTouchX = touch.clientX;
+      lastTouchY = touch.clientY;
+
+      // Track velocity for inertia
+      velocityX = dx * 0.008;
+      velocityY = dy * 0.008;
+
+      cameraAzimuth -= velocityX;
+      cameraElevation += velocityY;
+      clampCamera();
+    } else if (isTouchPanning && e.touches.length >= 2) {
+      // Two finger pinch-zoom and pan
+      const center = getTouchCenter(e.touches);
+      const pinchDistance = getPinchDistance(e.touches);
+
+      // Pan with two-finger drag
+      const dx = center.x - lastTouchX;
+      const dy = center.y - lastTouchY;
+      panCamera(dx * 0.8, dy * 0.8);
+
+      // Pinch zoom
+      if (lastPinchDistance > 0) {
+        const pinchDelta = pinchDistance - lastPinchDistance;
+        const zoomSpeed = 0.005 * Math.max(0.5, cameraDistance / 2);
+        cameraDistance *= 1 - pinchDelta * zoomSpeed;
+      }
+
+      lastTouchX = center.x;
+      lastTouchY = center.y;
+      lastPinchDistance = pinchDistance;
+      clampCamera();
+
+      // No inertia for pan/zoom
+      velocityX = 0;
+      velocityY = 0;
+    }
+  }
+
+  function onTouchEndCanvas(e: TouchEvent) {
+    activeTouches = e.touches.length;
+
+    if (activeTouches === 0) {
+      isTouchDragging = false;
+      isTouchPanning = false;
+      // Velocity preserved for inertia (applied in render loop)
+    } else if (activeTouches === 1 && isTouchPanning) {
+      // Transitioned from 2 fingers to 1 - switch to orbit mode
+      isTouchPanning = false;
+      isTouchDragging = true;
+      lastTouchX = e.touches[0].clientX;
+      lastTouchY = e.touches[0].clientY;
+      velocityX = 0;
+      velocityY = 0;
+    }
   }
 
   onMount(() => {
@@ -1881,6 +2022,7 @@
   });
   onDestroy(() => {
     if (animationId) cancelAnimationFrame(animationId);
+    if (mobileTouchHintTimer) clearTimeout(mobileTouchHintTimer);
     offscreenTexture?.destroy();
     depthTexture?.destroy();
     heightTexture?.destroy();
@@ -1936,12 +2078,28 @@
             on:mouseup={onMouseUp}
             on:mouseleave={onMouseUp}
             on:wheel|preventDefault={onWheel}
+            on:touchstart={onTouchStart}
+            on:touchmove|preventDefault={onTouchMove}
+            on:touchend={onTouchEndCanvas}
+            on:touchcancel={onTouchEndCanvas}
           ></canvas>
           {#if loading}
             <div class="loading-overlay">LOADING</div>
           {/if}
           {#if canvasDimensions.constrained}
             <span class="frame-label">{frameLabel}</span>
+          {/if}
+          {#if showMobileTouchHint}
+            <div class="mobile-touch-hint" class:visible={showMobileTouchHint}>
+              <div class="hint-content">
+                <span class="hint-gesture">👆 Drag</span>
+                <span class="hint-action">to orbit</span>
+              </div>
+              <div class="hint-content">
+                <span class="hint-gesture">🤏 Pinch</span>
+                <span class="hint-action">to zoom</span>
+              </div>
+            </div>
           {/if}
         </div>
       </div>

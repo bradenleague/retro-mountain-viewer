@@ -142,12 +142,19 @@
         {/if}
       </div>
     </div>
-    <div class="controls-hint">
+    <div class="controls-hint desktop-hint">
       <span>Drag to orbit</span>
       <span class="hint-divider"></span>
       <span>Scroll to zoom</span>
       <span class="hint-divider"></span>
       <span>Shift+drag to pan</span>
+    </div>
+    <div class="controls-hint mobile-hint">
+      <span>Drag to orbit</span>
+      <span class="hint-divider"></span>
+      <span>Pinch to zoom</span>
+      <span class="hint-divider"></span>
+      <span>2-finger drag to pan</span>
     </div>
   </footer>
 </div>
@@ -341,6 +348,11 @@
     color: var(--text-muted);
   }
 
+  /* Show appropriate hint based on device */
+  .mobile-hint {
+    display: none;
+  }
+
   .hint-divider {
     width: 3px;
     height: 3px;
@@ -352,6 +364,28 @@
      RESPONSIVE
      ═══════════════════════════════════════════════════════════════════════════ */
 
+  /* Tablet and below - show mobile controls hint */
+  @media (max-width: 1024px), (pointer: coarse) {
+    .toolbar-btn {
+      width: 44px;
+      height: 44px;
+    }
+
+    .toolbar-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .desktop-hint {
+      display: none;
+    }
+
+    .mobile-hint {
+      display: flex;
+    }
+  }
+
+  /* Phone - compact layout */
   @media (max-width: 640px) {
     .hud-header {
       padding: var(--space-2) var(--space-3);
@@ -366,25 +400,33 @@
     }
 
     .toolbar-btn {
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
     }
 
     .toolbar-btn svg {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
     }
 
     .hud-footer {
       padding: var(--space-3);
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-2);
     }
 
-    .controls-hint {
-      display: none;
+    .mobile-hint {
+      font-size: 0.625rem;
+      gap: var(--space-1);
     }
 
     .mountain-name {
       font-size: var(--text-base);
+    }
+
+    .footer-left {
+      width: 100%;
     }
   }
 </style>
